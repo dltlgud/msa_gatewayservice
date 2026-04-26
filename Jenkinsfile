@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "dorapizza/msa-gatewayservice"
+        DOCKER_IMAGE = "dltlgud/msa-gatewayservice"
         CONTAINER_NAME = "msa-gatewayservice"
     }
 
