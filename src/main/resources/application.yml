@@ -1,0 +1,37 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: msa_gatewayservice
+
+  cloud:
+    gateway:
+
+        routes:
+
+        - id: finalProject_3
+          uri: http://localhost:9080
+          predicates:
+            - Path=/finalProject_3/**
+
+        - id: board_service
+          uri: http://localhost:8002
+          predicates:
+            - Path=/board-service/**
+          filters:
+            - RewritePath=/board-service/(?<segment>.*), /\${segment}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/   
+      # 유레카(Eureka)서버 정보. Eureka 표준 URI는 마지막 / 포함이다.
+
+logging:
+  level:
+   com.netflix.discovery: WARN # Spring Boot + Eureka 클라이언트에서 기본적으로 매번 주기적으로 출력되는 Netflix Eureka 클라이언트에서 Eureka 서버 엔드포인트를 확인할 때 나오는 INFO 레벨 로그를 찍지 말도록 한다.
+
+
