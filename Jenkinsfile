@@ -29,9 +29,10 @@ pipeline {
                 )]) {
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker build --provenance=false -t $DOCKER_IMAGE:latest -t $DOCKER_IMAGE:$BUILD_NUMBER .
-                        docker push $DOCKER_IMAGE:latest
+                        docker build --provenance=false -t $DOCKER_IMAGE:$BUILD_NUMBER .
                         docker push $DOCKER_IMAGE:$BUILD_NUMBER
+                        docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest
+                        docker push $DOCKER_IMAGE:latest
                     '''
                 }
             }
