@@ -11,12 +11,12 @@ spring:
         routes:
 
         - id: finalProject_3
-          uri: http://localhost:9080
+          uri: lb://finalProject_3
           predicates:
             - Path=/finalProject_3/**
 
         - id: board_service
-          uri: http://localhost:8002
+          uri: lb://board_service
           predicates:
             - Path=/board-service/**
           filters:

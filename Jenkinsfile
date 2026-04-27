@@ -29,8 +29,9 @@ pipeline {
                 )]) {
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker build --provenance=false -t $DOCKER_IMAGE:latest .
+                        docker build --provenance=false -t $DOCKER_IMAGE:latest -t $DOCKER_IMAGE:$BUILD_NUMBER .
                         docker push $DOCKER_IMAGE:latest
+                        docker push $DOCKER_IMAGE:$BUILD_NUMBER
                     '''
                 }
             }
@@ -57,10 +58,18 @@ pipeline {
             sh 'docker logout'
         }
         success {
-            echo "Gateway Service deployment completed successfully."
+            sh """
+                curl -s -X POST -H 'Content-type: application/json' \
+                --data '{"text":"✅ *${env.JOB_NAME}* #${env.BUILD_NUMBER} 배포 성공"}' \
+                ${env.SLACK_WEBHOOK_URL}
+            """
         }
         failure {
-            echo "Gateway Service deployment failed."
+            sh """
+                curl -s -X POST -H 'Content-type: application/json' \
+                --data '{"text":"❌ *${env.JOB_NAME}* #${env.BUILD_NUMBER} 배포 실패"}' \
+                ${env.SLACK_WEBHOOK_URL}
+            """
         }
     }
 }
